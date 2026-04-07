@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Study Guide – IT 223 Integrative Programming & Technologies</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root[data-theme="dark"] {
+    --bg: #0d1117; --bg2: #161b22; --card: #1c2333; --card-hover: #212840;
+    --border: rgba(255,255,255,0.07); --text: #e6edf3; --text-muted: #8b949e; --text-sub: #c9d1d9;
+    --gold: #f0c060; --gold-dim: rgba(240,192,96,0.15);
+    --teal: #39d2a6; --teal-dim: rgba(57,210,166,0.15);
+    --red: #f85149; --red-dim: rgba(248,81,73,0.15);
+    --purple: #bc8cff; --purple-dim: rgba(188,140,255,0.15);
+    --blue: #58a6ff; --blue-dim: rgba(88,166,255,0.15);
+    --header-bg: #090d14; --section-border: #f0c060;
+    --highlight-bg: rgba(240,192,96,0.18); --table-head: #212840;
+    --table-even: rgba(255,255,255,0.03); --scrollbar: #30363d;
+  }
+  :root[data-theme="light"] {
+    --bg: #fdf6ec; --bg2: #f4ede0; --card: #ffffff; --card-hover: #f7f3ec;
+    --border: rgba(15,29,59,0.08); --text: #0f1d3b; --text-muted: #6b7a99; --text-sub: #2b3a5a;
+    --gold: #c8960a; --gold-dim: rgba(200,150,10,0.12);
+    --teal: #1a7f6e; --teal-dim: #e8f4f1;
+    --red: #c0392b; --red-dim: #fde8e8;
+    --purple: #5a3ea0; --purple-dim: #eee8ff;
+    --blue: #1565c0; --blue-dim: #e3f0ff;
+    --header-bg: #0f1d3b; --section-border: #e8b84b;
+    --highlight-bg: #fff3c2; --table-head: #0f1d3b;
+    --table-even: #f9f7f4; --scrollbar: #ccc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+  body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; transition: background 0.4s, color 0.4s; }
+
+  #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+  .particle { position: absolute; border-radius: 50%; opacity: 0; animation: floatUp linear infinite; }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.4; } 90% { opacity: 0.15; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+
+  header { background: var(--header-bg); padding: 2.5rem 2rem 0; text-align: center; position: relative; overflow: hidden; z-index: 1; }
+  .header-glow { position: absolute; top: -80px; left: 50%; transform: translateX(-50%); width: 400px; height: 200px; background: radial-gradient(ellipse, rgba(88,166,255,0.18) 0%, transparent 70%); animation: pulseGlow 4s ease-in-out infinite; }
+  @keyframes pulseGlow { 0%,100%{opacity:.6;transform:translateX(-50%) scale(1);}50%{opacity:1;transform:translateX(-50%) scale(1.15);} }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem,4vw,2.4rem); color: #fff; letter-spacing: 0.02em; position: relative; animation: slideDown 0.7s cubic-bezier(0.22,1,0.36,1) both; }
+  header p { color: var(--blue); font-size: 0.9rem; margin-top: 0.4rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; position: relative; animation: slideDown 0.8s 0.1s cubic-bezier(0.22,1,0.36,1) both; }
+  @keyframes slideDown { from{opacity:0;transform:translateY(-20px);}to{opacity:1;transform:translateY(0);} }
+
+  .theme-toggle { position: absolute; top: 1rem; right: 1rem; background: var(--blue-dim); border: 1px solid var(--blue); color: var(--blue); padding: 0.35rem 0.75rem; border-radius: 20px; cursor: pointer; font-size: 0.78rem; font-weight: 600; letter-spacing: 0.05em; transition: all 0.2s; z-index: 10; }
+  .theme-toggle:hover { background: var(--blue); color: #000; }
+
+  .tabs { display: flex; max-width: 860px; margin: 2rem auto 0; padding: 0 1rem; border-bottom: 1px solid var(--border); position: relative; }
+  .tab-btn { flex: 1; padding: 0.8rem 0.5rem; background: transparent; color: var(--text-muted); border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; transition: color 0.2s; border-bottom: 3px solid transparent; position: relative; bottom: -1px; }
+  .tab-btn.active { color: var(--blue); border-bottom-color: var(--blue); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1rem 5rem; position: relative; z-index: 1; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .module-banner {
+    display: flex; align-items: center; gap: 0.75rem;
+    margin: 2.5rem 0 1.2rem; padding: 0.8rem 1.2rem;
+    border-radius: 12px; font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; font-weight: 700;
+  }
+  .module-banner.m1 { background: rgba(57,210,166,0.1); border: 1px solid rgba(57,210,166,0.3); color: var(--teal); }
+  .module-banner.m2 { background: rgba(88,166,255,0.1); border: 1px solid rgba(88,166,255,0.3); color: var(--blue); }
+  .module-banner.m3 { background: rgba(188,140,255,0.1); border: 1px solid rgba(188,140,255,0.3); color: var(--purple); }
+  .module-banner.m4 { background: rgba(240,192,96,0.12); border: 1px solid rgba(240,192,96,0.3); color: var(--gold); }
+  .module-banner .badge { font-size: 0.65rem; font-family: 'DM Sans', sans-serif; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 0.2rem 0.6rem; border-radius: 20px; }
+  .m1 .badge { background: var(--teal-dim); }
+  .m2 .badge { background: var(--blue-dim); }
+  .m3 .badge { background: var(--purple-dim); }
+  .m4 .badge { background: var(--gold-dim); }
+  .module-banner.m5 { background: rgba(248,81,73,0.08); border: 1px solid rgba(248,81,73,0.3); color: var(--red); }
+  .m5 .badge { background: var(--red-dim); }
+
+  .section-label { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--text); margin: 1.8rem 0 0.8rem; padding: 0.45rem 0.8rem; border-left: 4px solid var(--teal); background: var(--teal-dim); border-radius: 0 8px 8px 0; animation: fadeInLeft 0.5s ease both; }
+  .section-label.blue   { border-left-color: var(--blue);   background: var(--blue-dim); }
+  .section-label.purple { border-left-color: var(--purple); background: var(--purple-dim); }
+  .section-label.gold   { border-left-color: var(--gold);   background: var(--gold-dim); }
+  .section-label.red    { border-left-color: var(--red);    background: var(--red-dim); }
+  @keyframes fadeInLeft { from{opacity:0;transform:translateX(-16px);}to{opacity:1;transform:translateX(0);} }
+
+  .card { background: var(--card); border-radius: 14px; box-shadow: 0 2px 16px rgba(0,0,0,0.25); margin-bottom: 0.85rem; overflow: hidden; border: 1px solid var(--border); transition: transform 0.2s,box-shadow 0.2s,border-color 0.2s; animation: cardIn 0.4s ease both; }
+  @keyframes cardIn { from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);} }
+  .card:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(0,0,0,0.35); border-color: rgba(88,166,255,0.25); }
+  .card-header { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.2rem; cursor: pointer; user-select: none; transition: background 0.15s; gap: 1rem; }
+  .card-header:hover { background: var(--card-hover); }
+  .card-title { font-weight: 600; font-size: 0.97rem; color: var(--text); flex: 1; }
+  .tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; padding: 0.22rem 0.6rem; border-radius: 20px; white-space: nowrap; }
+  .tag-def     { background: var(--teal-dim);   color: var(--teal); }
+  .tag-type    { background: var(--blue-dim);   color: var(--blue); }
+  .tag-arch    { background: var(--purple-dim); color: var(--purple); }
+  .tag-rule    { background: var(--red-dim);    color: var(--red); }
+  .tag-benefit { background: var(--gold-dim);   color: var(--gold); }
+  .chevron { font-size: 0.9rem; color: var(--text-muted); transition: transform 0.3s cubic-bezier(0.22,1,0.36,1); flex-shrink: 0; }
+  .card.open .chevron { transform: rotate(180deg); }
+  .card-body { display: none; padding: 0 1.2rem 1.2rem; border-top: 1px solid var(--border); animation: expandIn 0.25s ease both; }
+  @keyframes expandIn { from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);} }
+  .card.open .card-body { display: block; }
+  .card-body p,.card-body li { font-size: 0.92rem; line-height: 1.75; color: var(--text-sub); }
+  .card-body ul { padding-left: 1.3rem; margin-top: 0.5rem; }
+  .card-body li { margin-bottom: 0.35rem; }
+  .highlight { background: var(--highlight-bg); padding: 0.1em 0.35em; border-radius: 4px; font-weight: 600; color: var(--text); }
+  .compare-table { width: 100%; border-collapse: collapse; margin-top: 0.9rem; font-size: 0.86rem; border-radius: 8px; overflow: hidden; }
+  .compare-table th { background: var(--table-head); color: #fff; padding: 0.55rem 0.8rem; text-align: left; font-weight: 600; }
+  .compare-table td { padding: 0.45rem 0.8rem; border-bottom: 1px solid var(--border); vertical-align: top; color: var(--text-sub); }
+  .compare-table tr:nth-child(even) td { background: var(--table-even); }
+
+  .steps { counter-reset: step; margin-top: 0.5rem; }
+  .step { display: flex; gap: 0.7rem; margin-bottom: 0.55rem; align-items: flex-start; }
+  .step-num { counter-increment: step; content: counter(step); background: var(--blue-dim); color: var(--blue); border-radius: 50%; width: 22px; height: 22px; font-size: 0.72rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+  .step-text { font-size: 0.92rem; color: var(--text-sub); line-height: 1.65; }
+  .step-label { font-weight: 700; color: var(--text); }
+
+  /* FLASHCARD */
+  .flashcard-area { margin-top: 1.5rem; }
+  .fc-progress { text-align: center; font-size: 0.83rem; color: var(--text-muted); margin-bottom: 1.2rem; font-weight: 500; }
+  .fc-scene { perspective: 1200px; margin: 0 auto; max-width: 600px; }
+  .flashcard { background: transparent; border-radius: 18px; min-height: 240px; cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform 0.55s cubic-bezier(0.22,1,0.36,1); box-shadow: 0 8px 40px rgba(0,0,0,0.4); }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-face { position: absolute; inset: 0; backface-visibility: hidden; border-radius: 18px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 2rem; text-align: center; border: 1.5px solid var(--border); }
+  .fc-front { background: var(--card); border-color: rgba(88,166,255,0.3); }
+  .fc-back { background: linear-gradient(135deg,#112040 0%,#0d1a35 100%); border-color: rgba(88,166,255,0.3); transform: rotateY(180deg); }
+  .fc-label { position: absolute; top: 0.9rem; left: 1.1rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--blue); }
+  .fc-back .fc-label { color: var(--gold); }
+  .fc-module-tag { position: absolute; top: 0.9rem; right: 1.1rem; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.15rem 0.5rem; border-radius: 10px; }
+  .fc-question { font-family: 'Playfair Display', serif; font-size: clamp(1.05rem,2.5vw,1.25rem); color: var(--text); line-height: 1.5; }
+  .fc-answer { font-size: 0.93rem; color: #c9e8ff; line-height: 1.75; white-space: pre-line; }
+  .fc-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 1.2rem; }
+  .fc-controls { display: flex; gap: 0.8rem; justify-content: center; margin-top: 1.4rem; flex-wrap: wrap; }
+  .fc-bar-wrap { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1.2rem; }
+  .fc-bar { height: 4px; background: var(--blue); border-radius: 2px; transition: width 0.4s ease; }
+
+  .filter-row { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.2rem; }
+  .filter-btn { background: var(--card); border: 1px solid var(--border); color: var(--text-muted); padding: 0.35rem 0.9rem; border-radius: 20px; cursor: pointer; font-family: 'DM Sans',sans-serif; font-size: 0.78rem; font-weight: 600; transition: all 0.15s; }
+  .filter-btn:hover { border-color: var(--blue); color: var(--text); }
+  .filter-btn.active-f { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .filter-btn.f2.active-f { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .filter-btn.f3.active-f { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+  .filter-btn.f4.active-f { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+  .btn { padding: 0.6rem 1.4rem; border-radius: 10px; border: none; cursor: pointer; font-family: 'DM Sans',sans-serif; font-weight: 600; font-size: 0.88rem; transition: all 0.18s; letter-spacing: 0.03em; }
+  .btn-blue { background: var(--blue); color: #0d1117; }
+  .btn-blue:hover { filter: brightness(1.1); transform: translateY(-1px); }
+  .btn-outline { background: transparent; border: 1.5px solid var(--text-muted); color: var(--text); }
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); transform: translateY(-1px); }
+
+  .quiz-intro { text-align: center; padding: 3rem 1rem; }
+  .quiz-intro h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; margin-bottom: 0.7rem; color: var(--text); }
+  .quiz-intro p { color: var(--text-muted); margin-bottom: 1.8rem; }
+  .quiz-filter-row { display: flex; gap: 0.5rem; justify-content: center; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .qf-btn { background: var(--card); border: 1px solid var(--border); color: var(--text-muted); padding: 0.4rem 1rem; border-radius: 20px; cursor: pointer; font-family: 'DM Sans',sans-serif; font-size: 0.8rem; font-weight: 600; transition: all 0.15s; }
+  .qf-btn.on { border-color: var(--teal); color: var(--teal); background: var(--teal-dim); }
+  .qf-btn.on.m2c { border-color: var(--blue); color: var(--blue); background: var(--blue-dim); }
+  .qf-btn.on.m3c { border-color: var(--purple); color: var(--purple); background: var(--purple-dim); }
+  .qf-btn.on.m4c { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+  .quiz-q { background: var(--card); border-radius: 14px; padding: 1.4rem 1.4rem 1rem; box-shadow: 0 2px 16px rgba(0,0,0,0.25); margin-bottom: 1.4rem; border: 1px solid var(--border); animation: cardIn 0.35s ease both; }
+  .quiz-q-text { font-weight: 600; font-size: 0.97rem; margin-bottom: 1rem; line-height: 1.55; color: var(--text); }
+  .quiz-q-module { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .quiz-opt { display: block; padding: 0.65rem 0.95rem; border-radius: 9px; cursor: pointer; margin-bottom: 0.45rem; border: 1.5px solid var(--border); font-size: 0.9rem; background: transparent; width: 100%; text-align: left; font-family: 'DM Sans',sans-serif; color: var(--text-sub); transition: all 0.15s; }
+  .quiz-opt:hover { background: var(--blue-dim); border-color: var(--blue); color: var(--text); }
+  .quiz-opt.correct { background: var(--teal-dim); border-color: var(--teal); color: var(--teal); font-weight: 600; pointer-events: none; }
+  .quiz-opt.wrong   { background: var(--red-dim);  border-color: var(--red);  color: var(--red);  pointer-events: none; }
+  .quiz-opt.disabled { pointer-events: none; opacity: 0.5; }
+  .quiz-feedback { font-size: 0.86rem; margin-top: 0.7rem; padding: 0.55rem 0.9rem; border-radius: 8px; line-height: 1.5; }
+  .quiz-feedback.ok  { background: var(--teal-dim); color: var(--teal); }
+  .quiz-feedback.bad { background: var(--red-dim);  color: var(--red); }
+  .quiz-score { text-align: center; background: linear-gradient(135deg,#0d2040 0%,#0d1535 100%); color: #fff; border-radius: 18px; padding: 2.5rem; margin-top: 1rem; border: 1px solid rgba(88,166,255,0.2); animation: popIn 0.4s cubic-bezier(0.22,1,0.36,1) both; }
+  @keyframes popIn { from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);} }
+  .quiz-score h2 { font-family: 'Playfair Display', serif; font-size: 2rem; }
+  .quiz-score p  { color: rgba(255,255,255,0.7); margin-top: 0.5rem; }
+  .big-score { font-size: 3.5rem; font-weight: 900; color: var(--blue); display: block; margin: 0.6rem 0; animation: countUp 0.5s ease; }
+  @keyframes countUp { from{transform:scale(0.5);opacity:0;}to{transform:scale(1);opacity:1;} }
+</style>
+</head>
+<body>
+<div id="particles"></div>
+
+<header>
+  <div class="header-glow"></div>
+  <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">☀ Light</button>
+  <h1>💻 IT 223 – Integrative Programming &amp; Technologies</h1>
+  <p>Definitions · Integration Models · Architecture · Middleware · Web Services | 75+ Terms</p>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('notes',event)">📖 Notes</button>
+    <button class="tab-btn" onclick="switchTab('flashcards',event)">🃏 Flashcards</button>
+    <button class="tab-btn" onclick="switchTab('quiz',event)">✏️ Quiz</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ===== NOTES TAB ===== -->
+<div class="tab-content active" id="tab-notes">
+
+  <!-- MODULE 1 -->
+  <div class="module-banner m1"><span class="badge">Module 1</span> Definitions &amp; Concepts of Integration</div>
+
+  <p class="section-label">What is Software Integration?</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Definition of Software Integration</span><span class="tag tag-def">Definition</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">Software Integration</span> refers to techniques for combining existing software components to form a complete system. It includes at least one existing software system developed in the past with no plan for symmetric integration with another component in the future.</p>
+      <p style="margin-top:0.7rem;"><span class="highlight">Application Integration</span> deals with integration approaches and techniques that connect different components of IT infrastructure — people, applications, platforms, and databases — to enable secure, intra and inter application collaboration.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Application Integration</span><span class="tag tag-def">Definition</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">Application Integration</span> assists in unlimited sharing of data and business processes among any connected applications or data structures.</p>
+      <p style="margin-top:0.6rem;">It is a process of connecting multiple, independently developed applications using incompatible technologies into a single organization-wide system with information flowing seamlessly among the integrated systems or components.</p>
+      <p style="margin-top:0.6rem;">In short: <span class="highlight">Integration</span> is the process of combining separate applications into cooperating collections of applications.</p>
+    </div>
+  </div>
+
+  <p class="section-label">Types of Software Integration</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">4 Types of Software Integration</span><span class="tag tag-type">Types</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Type</th><th>Description</th></tr>
+        <tr><td><strong>1. System Integration</strong></td><td>Given two or more systems, subsystems or components — each functioning properly — they are combined to satisfy the combined requirements within a newly formed environment.</td></tr>
+        <tr><td><strong>2. Functional / Technology Integration</strong></td><td>A software system already functioning properly must be updated by integrating a new function or technology while preserving the original functionality.</td></tr>
+        <tr><td><strong>3. Incremental Engineering</strong></td><td>A system is developed and delivered using available technologies; additional functions can later be integrated. The key challenge is designing the system with future integration in mind.</td></tr>
+        <tr><td><strong>4. Modification</strong></td><td>An existing, properly functioning software system must be decomposed and reintegrated to carry out a modification.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <p class="section-label">Why Integration is Needed</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">5 Reasons for Integration</span><span class="tag tag-benefit">Benefits</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text"><span class="step-label">Technology Change:</span> Technology change affects all layers; legacy systems do not go away easily.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text"><span class="step-label">Organizational Architecture:</span> The architecture of an organization's information system depends on constraints related to technology AND the organization itself.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text"><span class="step-label">Departmental Silos:</span> Within an enterprise, each department may have its own IT infrastructure maintained independently. Integrating them may bring additional value.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text"><span class="step-label">Zero Latency:</span> Integration assists in forming a Zero Latency Organization — when all functions work with the same up-to-date information, latency between applications is eliminated.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-text"><span class="step-label">New Applications:</span> Updating and integrating applications is possible whenever required. New apps can be created by integrating real-time data from different parts of the enterprise.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODULE 2 -->
+  <div class="module-banner m2" style="margin-top:3rem;"><span class="badge">Module 2</span> Integration Models &amp; Methods</div>
+
+  <p class="section-label blue">Integration Models</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">3 Integration Models</span><span class="tag tag-type">Models</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Model</th><th>Description</th></tr>
+        <tr><td><strong>1. Presentation Integration</strong></td><td>Allows integration of new software through the existing presentation (UI) of legacy software. Typically used to create a new user interface or integrate with other applications.</td></tr>
+        <tr><td><strong>2. Data Integration</strong></td><td>Allows integration of software through access to the data that is created, managed, and stored by the software — typically for reusing or synchronizing data across applications.</td></tr>
+        <tr><td><strong>3. Functional Integration</strong></td><td>Allows integration of software for the purpose of invoking existing functionality from other new or existing applications. Integration is done through software interfaces.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <p class="section-label blue">4 Methods in Application Integration</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">File Transfer</span><span class="tag tag-type">Method</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>One application <span class="highlight">writes a file</span> that another later reads. The applications must agree on the filename and location, the format of the file, the timing of when it will be written and read, and who will delete the file.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Shared Database</span><span class="tag tag-type">Method</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Multiple applications <span class="highlight">share the same database schema</span>, located in a single physical database. Because there is no duplicate data storage, no data has to be transferred from one application to another.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Remote Procedure Invocation</span><span class="tag tag-type">Method</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>One application <span class="highlight">exposes some of its functionality</span> so it can be accessed remotely by other applications as a remote procedure. Communication occurs in <span class="highlight">real-time and synchronously</span>.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Messaging</span><span class="tag tag-type">Method</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>One application <span class="highlight">publishes a message</span> to a common message channel. Other applications can read the message from the channel at a later time. Applications must agree on a channel as well as message format.</p>
+    </div>
+  </div>
+
+  <p class="section-label blue">Challenges in Integration</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">5 Challenges of Integration</span><span class="tag tag-rule">Challenges</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Challenge</th><th>Explanation</th></tr>
+        <tr><td><strong>1. Network Unreliability</strong></td><td>Integration solutions must transport data across networks. Unlike single-computer processes, distributed computing must deal with a much larger set of possible problems.</td></tr>
+        <tr><td><strong>2. Distributed Systems</strong></td><td>In the worst case, every application runs on a completely separate environment with no shared database. Message-based communication is the only possibility to exchange information.</td></tr>
+        <tr><td><strong>3. Slow Networks</strong></td><td>Sending data across a network is multiple orders of magnitude slower than local method calls. Designing a distributed solution like a single application could have disastrous performance implications.</td></tr>
+        <tr><td><strong>4. Heterogeneity</strong></td><td>Integration must transmit information between systems using different programming languages, operating platforms, and data formats. Each application implements its own data model, so mapping and transformations are required.</td></tr>
+        <tr><td><strong>5. Modification Complexity</strong></td><td>Applications change over time. Systems need loose coupling to minimize dependencies. Integrated systems are maintained independently and upgraded at different times.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODULE 3 -->
+  <div class="module-banner m3" style="margin-top:3rem;"><span class="badge">Module 3</span> Integration Architecture &amp; SOA</div>
+
+  <p class="section-label purple">Integration Architecture</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">What is Integration Architecture?</span><span class="tag tag-arch">Architecture</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">Integration Architecture</span> refers to the design and structure of systems and technologies that enable the seamless exchange of data and functionality between different applications, systems, and components within an organization or across multiple organizations.</p>
+      <p style="margin-top:0.7rem;">It is a software architecture developed to facilitate the integration of IT components. Modern application architecture means companies use a wide variety of applications with different tasks — Integration Architecture ensures communication between these applications.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Benefits of Integration Architecture</span><span class="tag tag-benefit">Benefits</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Benefit</th><th>Description</th></tr>
+        <tr><td><strong>1. Efficiency Increases</strong></td><td>Creates a control mechanism over daily processes. Employees can use all needed applications from a single entry point, doing more work in less time.</td></tr>
+        <tr><td><strong>2. Reliable &amp; Accurate Data</strong></td><td>No disconnection; data is kept up-to-date in all components. The security of the data is not compromised.</td></tr>
+        <tr><td><strong>3. Faster Decision Making</strong></td><td>Data is no longer dispersed into repositories. You can see all information as a whole, which is vital for faster decisions.</td></tr>
+        <tr><td><strong>4. Reduces Costs</strong></td><td>Replacing all broken parts with a single integrated system protects the business from excessive financial expenses.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <p class="section-label purple">SOA – Service-Oriented Architecture</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">What is SOA?</span><span class="tag tag-arch">Architecture</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">SOA (Service-Oriented Architecture)</span> is a design approach for building software systems composed of modular and interoperable services. It organizes software components into reusable and loosely coupled services that can be easily combined to create new applications and support business processes.</p>
+      <p style="margin-top:0.7rem;">SOA provides ways to quickly integrate new applications and enhance collaboration between IT and business processes.</p>
+      <ul style="margin-top:0.7rem;">
+        <li><strong>Creates reusable code</strong> — reduces time spent in project development.</li>
+        <li><strong>Essential for scalability</strong> — helps scale your business to meet customer needs.</li>
+        <li><strong>Increases interaction</strong> — produces solutions to prevent communication breakdowns between departments.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">7 Characteristics &amp; Principles of SOA</span><span class="tag tag-arch">Principles</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Principle</th><th>Description</th></tr>
+        <tr><td><strong>1. Services</strong></td><td>Functionality is encapsulated as services — self-contained, modular components that expose well-defined interfaces and can be invoked over a network.</td></tr>
+        <tr><td><strong>2. Loose Coupling</strong></td><td>Services can evolve independently without affecting each other. They communicate through standardized interfaces, enabling easy replacement or extension.</td></tr>
+        <tr><td><strong>3. Service Contracts</strong></td><td>Services communicate using well-defined contracts specifying the interface (operations, parameters, return values) and any associated policies or constraints.</td></tr>
+        <tr><td><strong>4. Service Composition</strong></td><td>Services can be combined and orchestrated to deliver complex functionalities. Composition can be done dynamically, allowing for flexible and adaptable systems.</td></tr>
+        <tr><td><strong>5. Service Discovery</strong></td><td>Services can be located, selected, and invoked at runtime based on their capabilities and availability. Service registries assist in discovery and management.</td></tr>
+        <tr><td><strong>6. Scalability &amp; Reusability</strong></td><td>Services can be scaled independently to handle load. Reusability is achieved by designing services as modular and generic components serving multiple applications.</td></tr>
+        <tr><td><strong>7. Service Security</strong></td><td>SOA provides mechanisms for authentication, access control, and data protection enforced at the service level to ensure confidentiality, integrity, and availability.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- MODULE 4 -->
+  <div class="module-banner m4" style="margin-top:3rem;"><span class="badge">Module 4</span> Middleware &amp; Its Types</div>
+
+  <p class="section-label gold">What is Middleware?</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Middleware Definition &amp; Advantages</span><span class="tag tag-def">Definition</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">Middleware</span> is a layer of software that enables interaction and transmission of information between assorted applications and services that make up a complex system, providing a uniform user experience for clients.</p>
+      <p style="margin-top:0.6rem;">In web development (e.g., Express.js), middleware gets executed after the server receives the request and before the controller actions send the response.</p>
+      <p style="margin-top:0.7rem;"><strong>Advantages of Middleware:</strong></p>
+      <ul>
+        <li>Can process request objects multiple times before the server works on them.</li>
+        <li>Used to add logging and authentication functionality.</li>
+        <li>Improves client-side rendering performance.</li>
+        <li>Used for setting specific HTTP headers.</li>
+        <li>Helps for optimization and better performance.</li>
+      </ul>
+    </div>
+  </div>
+
+  <p class="section-label gold">Types of Middleware (14 Types)</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">1. Database Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>The most common middleware. <span class="highlight">Enables access and interaction with different database gateways.</span> Generic term for software infrastructure that supports: interoperability between software components, improved database service (performance scaling/fault tolerance), and adaptation to workloads.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">2. Message-Oriented Middleware (MOM)</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Allows software applications across multiple OS and networking protocols to <span class="highlight">receive and send messages</span> to each other. Provides <span class="highlight">asynchronous</span> inter-application communication. Message queues store messages on the MOM platform. Queues act as a central component for implementing asynchronous interaction.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">3. Portals</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Enterprises use portal middleware to <span class="highlight">facilitate interactions between client-facing systems and backend systems</span>. Allows interaction between a client device and back-end systems (e.g., logging into an intranet or content management system).</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">4. Enterprise Application Integration (EAI)</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>A virtual layer that <span class="highlight">connects applications, data, processes, and services</span>, irrespective of where they are located (cloud or on-premise) and what technology they are based on. Translates data and commands from one application format into another.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">5. Transactional Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Ensures that <span class="highlight">transactions between heterogeneous components go through all necessary steps to reach completion</span>. Includes TP monitors and application servers. Good fit with EAI because the architecture provides a centralized server able to process information.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">6. Content Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Used to <span class="highlight">abstract specific content</span> similar to publish and subscribe models. It includes database middleware, application server middleware, message-oriented middleware, web middleware, and transaction processing monitors.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">7. Remote Procedure Call (RPC)</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Allows one application to <span class="highlight">trigger a function in another application</span> whether they reside in the same network or not. Makes an application functional across multiple platforms. Mostly used to initiate and process data transfers where both client and server are online simultaneously.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">8. Device Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Contains a specific set of capabilities to <span class="highlight">integrate with or build applications on specific devices</span>. Usually used to build mobile applications. Embedded middleware enables communication between embedded applications, operating systems, and applications.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">9. Object Request Broker (ORB)</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Handles requests from one application to another <span class="highlight">without letting the applications worry about where each is hosted</span>. Provides a framework for clients to locate objects in the network and call operations on those objects as though they were local, providing location transparency.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">10. Platform Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Allows business logic to be seated in <span class="highlight">any platform (OS or hardware)</span>, including web servers, application servers, hosting environments, or containers. Supports application development through managed tools and resources.</p>
+      <p style="margin-top:0.6rem;"><strong>Examples:</strong> Runtime Environments (e.g., Java Runtime Environment), Web Servers, Content Management Systems (e.g., WordPress).</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">11. Application Server Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>A framework that allows the <span class="highlight">creation, deployment, and maintenance of enterprise applications</span> within a system. Provides distributed computing infrastructure, scalable and efficient application processing, and security services.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">12. Web Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Allows companies to <span class="highlight">integrate more easily with individual backend systems</span>. Works like a client-server architecture where the web services application is the client and the middleware is the server that provides services to the client.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">13. Robotics Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Probably the most widespread middleware for robotics, representing the <span class="highlight">primary means for component integration</span> in that domain. Simplifies the integration of robotic hardware, firmware, and software, irrespective of manufacturer and location.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">14. Cloud Middleware</span><span class="tag tag-type">Type</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p>Sits between the <span class="highlight">operating systems behind the cloud and the cloud users</span>, providing a remote platform to create, maintain, and communicate with hosted applications and data. Always accessible to users in the form of a remote software platform for communication or management of data.</p>
+    </div>
+  </div>
+
+
+  <!-- MODULE 5 -->
+  <div class="module-banner m5" style="margin-top:3rem;"><span class="badge">Module 5</span> Web Services &amp; Middleware (IT 223)</div>
+
+  <p class="section-label red">What is a Web Service?</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Web Service – Definition</span><span class="tag tag-def">Definition</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">Web Services</span> are a method of communication between two electronic devices over the World Wide Web (WWW) network. They allow applications to communicate with each other and exchange data in a standardized format, such as <strong>XML</strong> or <strong>JSON</strong> (JavaScript Object Notation).</p>
+      <p style="margin-top:0.6rem;">Web Services can be accessed by various clients including web browsers, mobile devices, and desktop applications, making them a popular choice for building interconnected systems.</p>
+      <p style="margin-top:0.6rem;">They provide a <span class="highlight">standardized and platform-independent</span> way for applications to communicate and share data over the internet, enabling integration and interoperability across diverse systems and environments.</p>
+    </div>
+  </div>
+
+  <p class="section-label red">Functions of Web Services</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">5 Functions of Web Services</span><span class="tag tag-type">Functions</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text">Accessible via the <span class="highlight">internet or intranet</span> networks.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text">Uses a <span class="highlight">standardized XML messaging protocol</span>.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text">Independent of <span class="highlight">operating system or programming language</span>.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text">Self-describing using the <span class="highlight">XML standard</span>.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-text">Locatable using a <span class="highlight">simple location approach</span>.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label red">Components of Web Services</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">1. SOAP – Simple Object Access Protocol</span><span class="tag tag-type">Component</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">SOAP</span> is a transport-independent messaging protocol built on sending XML data in the form of SOAP Messages. An XML document is attached to each message.</p>
+      <p style="margin-top:0.6rem;">Only the <strong>structure</strong> of the XML document (not the content) follows a pattern. Everything is sent through <span class="highlight">HTTP</span>, the standard web protocol.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">2. UDDI – Universal Description, Discovery, and Integration</span><span class="tag tag-type">Component</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">UDDI</span> is a standard for specifying, publishing, and discovering a service provider's online services. It provides a repository where <strong>WSDL files</strong> can be hosted so client applications can discover and learn about available web services.</p>
+      <p style="margin-top:0.6rem;">The client application has full access to UDDI, which serves as a <span class="highlight">database for all WSDL files</span>.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">3. WSDL – Web Services Description Language</span><span class="tag tag-type">Component</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">WSDL</span> is an XML-based file that explains what the web service does to the client application. It tells the client both where the web service is located and how to use it.</p>
+      <p style="margin-top:0.6rem;">The client invoking a web service must know: (1) the <strong>location</strong> of the web service and (2) <strong>what the service does</strong> in order to invoke the correct one.</p>
+    </div>
+  </div>
+
+  <p class="section-label red">How Does Web Service Work?</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">5 Steps: How Web Service Works</span><span class="tag tag-arch">Process</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Step</th><th>Description</th></tr>
+        <tr><td><strong>1. Service Provider</strong></td><td>The entity that hosts the web service. Exposes functionalities or resources that other applications can access over the internet. Described in WSDL format.</td></tr>
+        <tr><td><strong>2. Service Consumer</strong></td><td>The application or system that uses the web service's functionalities. Communicates with the provider to send requests and receive responses.</td></tr>
+        <tr><td><strong>3. Request &amp; Response</strong></td><td>Communication happens over HTTP or HTTPS. The consumer sends a request specifying the desired operation and any necessary parameters.</td></tr>
+        <tr><td><strong>4. Data Exchange</strong></td><td>XML (used in SOAP) for structured/formal communication; JSON is lightweight and commonly used in RESTful web services.</td></tr>
+        <tr><td><strong>5. Interoperability</strong></td><td>Different applications and systems can communicate regardless of the technologies they are built with, as long as both sides follow agreed-upon standards and protocols.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <p class="section-label red">Features / Characteristics of Web Services</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">6 Features of Web Services</span><span class="tag tag-arch">Characteristics</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Feature</th><th>Explanation</th></tr>
+        <tr><td><strong>1. XML Based</strong></td><td>Uses XML for information representation and data transportation. No need for networking, OS, or platform binding. Web service-based apps are highly interoperable at the middle level.</td></tr>
+        <tr><td><strong>2. Loosely Coupled</strong></td><td>The consumer is not necessarily directly linked to the provider. The provider's interface can change without impacting the consumer's ability to interact. (Contrast: tightly coupled systems require both sides to update together.)</td></tr>
+        <tr><td><strong>3. Synchronous or Asynchronous</strong></td><td>Synchronous: client waits for the service to finish. Asynchronous: client invokes a task and continues with other tasks while waiting.</td></tr>
+        <tr><td><strong>4. Coarse-Grained</strong></td><td>Multiple fine-grained methods are combined into a single rough-grained service consumed by a buyer or service.</td></tr>
+        <tr><td><strong>5. Supports Remote Procedural Call (RPC)</strong></td><td>Consumers can use XML-based protocol to call procedures, functions, and methods on remote objects.</td></tr>
+        <tr><td><strong>6. Supports Document Exchanges</strong></td><td>XML's simple approach to data communication enables exchange of simple or complex documents, aiding corporate reconciliation.</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <p class="section-label red">Advantages of Web Services</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">5 Advantages of Web Services</span><span class="tag tag-benefit">Advantages</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-text"><span class="step-label">Business Functions over the Internet:</span> Web services deliver functionality via HTTP, making them accessible from anywhere. All apps are now internet-accessible, making web services increasingly valuable.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-text"><span class="step-label">Interoperability:</span> Diverse apps can communicate and exchange information. A .NET application can communicate with Java web services and vice versa — platform and language independence.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-text"><span class="step-label">Low-Cost Communication:</span> Uses SOAP over HTTP, so existing internet connections can implement them. Also supports FTP and other reliable transport protocols.</div></div>
+        <div class="step"><div class="step-num">4</div><div class="step-text"><span class="step-label">Standard Protocol:</span> All four layers of the web services protocol stack (Service Transport, XML Messaging, Service Description, Service Discovery) use well-defined protocols understood by everyone.</div></div>
+        <div class="step"><div class="step-num">5</div><div class="step-text"><span class="step-label">Reusability:</span> A single web service can be used simultaneously by several different client applications.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-label red">Middleware – Deep Dive (IT 223 Slides)</p>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">Middleware – Definition (IT 223 Slides)</span><span class="tag tag-def">Definition</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <p><span class="highlight">Middleware</span> refers to software that acts as an intermediary between different applications, systems, or components to facilitate communication, data management, and integration.</p>
+      <p style="margin-top:0.6rem;">It sits <strong>between the operating system and the application</strong>, providing services and functionalities that help in building distributed systems, connecting heterogeneous components, and abstracting complexity.</p>
+    </div>
+  </div>
+
+  <div class="card" onclick="toggleCard(this,event)">
+    <div class="card-header"><span class="card-title">6 Functionalities of Middleware</span><span class="tag tag-type">Functionalities</span><span class="chevron">▼</span></div>
+    <div class="card-body">
+      <table class="compare-table">
+        <tr><th>Functionality</th><th>Description</th></tr>
+        <tr><td><strong>1. Communication</strong></td><td>Facilitates communication between distributed components by providing standardized protocols, messaging formats, and communication mechanisms. Enables reliable and efficient data exchange over networks.</td></tr>
+        <tr><td><strong>2. Integration</strong></td><td>Helps integrate disparate systems, technologies, and platforms. Abstracts differences in data formats, protocols, and interfaces so applications work together seamlessly.</td></tr>
+        <tr><td><strong>3. Data Management</strong></td><td>Includes caching, transformation, and synchronization features. Provides services for accessing, storing, and processing data across distributed environments.</td></tr>
+        <tr><td><strong>4. Security</strong></td><td>Incorporates mechanisms like authentication, authorization, encryption, and digital signatures to protect data and communications from unauthorized access, tampering, or interception.</td></tr>
+        <tr><td><strong>5. Scalability &amp; Performance</strong></td><td>Optimizes performance through load balancing, resource allocation, and distributed processing. Enables horizontal scaling across multiple nodes or servers.</td></tr>
+        <tr><td><strong>6. Fault Tolerance &amp; Reliability</strong></td><td>Includes replication, redundancy, and failover mechanisms to ensure continuous operation and data integrity even when failures occur.</td></tr>
+      </table>
+    </div>
+  </div>
+
+</div><!-- end notes tab -->
+
+<!-- ===== FLASHCARDS TAB ===== -->
+<div class="tab-content" id="tab-flashcards">
+  <div class="flashcard-area">
+    <div class="filter-row">
+      <button class="filter-btn active-f" onclick="filterFC('all',this)">All Modules</button>
+      <button class="filter-btn f2" onclick="filterFC('m1',this)">Module 1</button>
+      <button class="filter-btn f2" onclick="filterFC('m2',this)">Module 2</button>
+      <button class="filter-btn f3" onclick="filterFC('m3',this)">Module 3</button>
+      <button class="filter-btn f4" onclick="filterFC('m4',this)">Module 4</button>
+      <button class="filter-btn" style="border-color:var(--red);color:var(--red-dim);" onclick="filterFC('m5',this)">Module 5</button>
+    </div>
+    <div class="fc-bar-wrap"><div class="fc-bar" id="fcBar" style="width:0%"></div></div>
+    <p class="fc-progress" id="fcProg">Card 1 of 1</p>
+    <div class="fc-scene">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="fc-face fc-front">
+          <span class="fc-label">QUESTION</span>
+          <span class="fc-module-tag" id="fcModTag"></span>
+          <p class="fc-question" id="fcQ">Loading...</p>
+          <p class="fc-hint">Tap to reveal answer</p>
+        </div>
+        <div class="fc-face fc-back">
+          <span class="fc-label">ANSWER</span>
+          <p class="fc-answer" id="fcA"></p>
+        </div>
+      </div>
+    </div>
+    <div class="fc-controls">
+      <button class="btn btn-outline" onclick="prevCard()">← Prev</button>
+      <button class="btn btn-blue" onclick="nextCard()">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== QUIZ TAB ===== -->
+<div class="tab-content" id="tab-quiz">
+  <div id="quiz-intro" class="quiz-intro">
+    <h2>📝 Knowledge Check</h2>
+    <p>Select modules and test your understanding of IT 223.</p>
+    <div class="quiz-filter-row">
+      <button class="qf-btn on" id="qfb-m1" onclick="toggleQuizFilter('m1')">Module 1</button>
+      <button class="qf-btn on m2c" id="qfb-m2" onclick="toggleQuizFilter('m2')">Module 2</button>
+      <button class="qf-btn on m3c" id="qfb-m3" onclick="toggleQuizFilter('m3')">Module 3</button>
+      <button class="qf-btn on m4c" id="qfb-m4" onclick="toggleQuizFilter('m4')">Module 4</button>
+      <button class="qf-btn on" id="qfb-m5" onclick="toggleQuizFilter('m5')" style="border-color:var(--red);color:var(--red);background:var(--red-dim);">Module 5</button>
+    </div>
+    <button class="btn btn-blue" onclick="startQuiz()">Start Quiz</button>
+  </div>
+  <div id="quiz-body" style="display:none;"></div>
+</div>
+
+</main>
+
+<script>
+// ===== THEME =====
+function toggleTheme(){
+  const r=document.documentElement;
+  const dark=r.getAttribute('data-theme')==='dark';
+  r.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('themeBtn').textContent=dark?'🌙 Dark':'☀ Light';
+}
+
+// ===== TABS =====
+function switchTab(id,e){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  e.target.classList.add('active');
+  if(id==='flashcards') initFlashcards();
+}
+
+// ===== CARDS =====
+function toggleCard(card,e){
+  if(e.target.closest('button')||e.target.closest('a'))return;
+  card.classList.toggle('open');
+}
+
+// ===== PARTICLES =====
+(function(){
+  const c=document.getElementById('particles');
+  const colors=['#58a6ff','#39d2a6','#bc8cff','#f0c060'];
+  for(let i=0;i<18;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const s=Math.random()*4+2;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${Math.random()*15+10}s;animation-delay:${Math.random()*10}s;`;
+    c.appendChild(p);
+  }
+})();
+
+// ===== FLASHCARDS DATA =====
+const allCards = [
+  // MODULE 1
+  {m:'m1',q:'What is Software Integration?',a:'Techniques for combining existing software components to form a complete system. It includes at least one existing software system developed in the past with no plan for future symmetric integration.'},
+  {m:'m1',q:'What is Application Integration?',a:'A process of connecting multiple independently developed applications using incompatible technologies into a single organization-wide system, with information flowing seamlessly among integrated components.'},
+  {m:'m1',q:'What is System Integration (as a type of software integration)?',a:'Given two or more systems, subsystems, or components — each functioning properly — they are combined to satisfy the combined requirements within the newly formed environment.'},
+  {m:'m1',q:'What is Functional/Technology Integration?',a:'Integrating a new function or technology within an already-functioning software system, while preserving the original system functionality.'},
+  {m:'m1',q:'What is Incremental Engineering?',a:'A software system is developed and delivered using available technologies; additional functions are later integrated. The challenge is to design the system with future integration in mind.'},
+  {m:'m1',q:'What is Modification (in software integration)?',a:'An existing and properly functioning software system must be decomposed and reintegrated to carry out a modification.'},
+  {m:'m1',q:'What is a Zero Latency Organization?',a:'When all functions within the organization work with the same up-to-date information, latency between applications is eliminated or reduced — achieved through integration.'},
+  // MODULE 2
+  {m:'m2',q:'What is the Presentation Integration Model?',a:'Allows integration of new software through the existing presentation (UI) of the legacy software. Typically used to create a new user interface or integrate with other applications.'},
+  {m:'m2',q:'What is the Data Integration Model?',a:'Allows integration of software through access to the data created, managed, and stored by the software — typically for the purpose of reusing or synchronizing data across applications.'},
+  {m:'m2',q:'What is the Functional Integration Model?',a:'Allows integration of software for the purpose of invoking existing functionality from other new or existing applications. Integration is done through interfaces to the software.'},
+  {m:'m2',q:'Describe the File Transfer integration method.',a:'One application writes a file that another later reads. Applications must agree on the filename, location, format, timing of writes/reads, and who will delete the file.'},
+  {m:'m2',q:'Describe the Shared Database integration method.',a:'Multiple applications share the same database schema located in a single physical database. No duplicate data storage — no data transfer needed between applications.'},
+  {m:'m2',q:'Describe Remote Procedure Invocation.',a:'One application exposes functionality that can be accessed remotely by other applications as a remote procedure. Communication occurs in real-time and synchronously.'},
+  {m:'m2',q:'Describe the Messaging integration method.',a:'One application publishes a message to a common message channel. Other applications read the message later. Applications must agree on a channel and message format.'},
+  {m:'m2',q:'What is the challenge of Network Unreliability in integration?',a:'Integration must transport data across networks. Unlike single-machine processes, distributed computing must be prepared to deal with a much larger set of possible problems.'},
+  {m:'m2',q:'What is the Heterogeneity challenge in integration?',a:'Each application may use different programming languages, operating platforms, and data formats. Each implements its own data model, so mapping and transformations are required.'},
+  // MODULE 3
+  {m:'m3',q:'What is Integration Architecture?',a:'The design and structure of systems and technologies that enable seamless exchange of data and functionality between different applications, systems, and components within or across organizations.'},
+  {m:'m3',q:'What is SOA?',a:'Service-Oriented Architecture — a design approach for building software systems composed of modular and interoperable services that are reusable and loosely coupled.'},
+  {m:'m3',q:'What does Loose Coupling mean in SOA?',a:'Services can evolve independently without affecting other services. They communicate through standardized interfaces, enabling easy replacement, update, or extension without disrupting the entire system.'},
+  {m:'m3',q:'What is a Service Contract in SOA?',a:'A well-defined contract specifying the service interface (operations, parameters, return values) and any associated policies or constraints, ensuring compatibility between services.'},
+  {m:'m3',q:'What is Service Composition in SOA?',a:'The ability to combine and orchestrate services to create new applications or support business processes. This can be done dynamically, allowing for flexible and adaptable systems.'},
+  {m:'m3',q:'What is Service Discovery in SOA?',a:'Services can be located, selected, and invoked at runtime based on their capabilities and availability. Service registries assist in discovery and management.'},
+  {m:'m3',q:'What is the Scalability & Reusability principle of SOA?',a:'Services can be scaled independently to handle increasing load. Reusability is achieved by designing services as modular and generic components that can serve multiple applications.'},
+  // MODULE 4
+  {m:'m4',q:'What is Middleware?',a:'A layer of software that enables interaction and transmission of information between assorted applications and services in a complex system, providing a uniform user experience for clients.'},
+  {m:'m4',q:'What is Database Middleware?',a:'The most common middleware. Enables access and interaction with different database gateways. Supports interoperability, improved database service, and workload adaptation.'},
+  {m:'m4',q:'What is Message-Oriented Middleware (MOM)?',a:'Allows applications across multiple OS and networking protocols to send and receive messages asynchronously. Message queues store messages on the MOM platform.'},
+  {m:'m4',q:'What is Enterprise Application Integration (EAI) middleware?',a:'A virtual layer connecting applications, data, processes, and services regardless of location (cloud or on-premise) and technology. Translates data and commands between application formats.'},
+  {m:'m4',q:'What is Transactional Middleware?',a:'Ensures transactions between heterogeneous components go through all necessary steps to reach completion. Includes TP monitors and application servers.'},
+  {m:'m4',q:'What is an Object Request Broker (ORB)?',a:'Handles requests from one application to another without the applications needing to know where each is hosted. Provides location transparency for remote objects.'},
+  {m:'m4',q:'What is Platform Middleware?',a:'Allows business logic to be seated in any platform (OS or hardware), including web servers, application servers, hosting environments, or containers.'},
+  {m:'m4',q:'What is Cloud Middleware?',a:'Sits between cloud operating systems and cloud users, providing a remote platform to create, maintain, and communicate with hosted applications and data.'},
+  {m:'m4',q:'What is Robotics Middleware?',a:'The most widespread middleware for robotics, representing the primary means for component integration. Simplifies integration of robotic hardware, firmware, and software regardless of manufacturer and location.'},
+  {m:'m4',q:'What is Remote Procedure Call (RPC) Middleware?',a:'Allows one application to trigger a function in another application, whether or not they reside in the same network. Makes applications functional across multiple platforms.'},
+  // MODULE 5
+  {m:'m5',q:'What is a Web Service?',a:'A method of communication between two electronic devices over the World Wide Web (WWW). Allows applications to communicate and exchange data in standardized formats like XML or JSON, accessible from web browsers, mobile devices, and desktop apps.'},
+  {m:'m5',q:'What does SOAP stand for and what is it?',a:'Simple Object Access Protocol — a transport-independent messaging protocol that sends XML data as SOAP Messages. Everything is transmitted via HTTP, the standard web protocol.'},
+  {m:'m5',q:'What does UDDI stand for and what does it do?',a:'Universal Description, Discovery, and Integration — a standard for specifying, publishing, and discovering a service provider\'s online services. Acts as a database/repository for all WSDL files.'},
+  {m:'m5',q:'What does WSDL stand for and what is its purpose?',a:'Web Services Description Language — an XML-based file that tells the client application what the web service does, where it is located, and how to use it.'},
+  {m:'m5',q:'What is a Service Provider in web services?',a:'The entity that hosts the web service. It exposes functionalities or resources that other applications can access over the internet. Described in standardized WSDL format.'},
+  {m:'m5',q:'What is a Service Consumer in web services?',a:'The application or system that uses the functionalities provided by the web service. It communicates with the service provider to send requests and receive responses.'},
+  {m:'m5',q:'What data formats are used in web service data exchange?',a:'XML (used in SOAP-based web services for structured/formal communication) and JSON (lightweight, commonly used in RESTful web services).'},
+  {m:'m5',q:'What is Interoperability in web services?',a:'Different applications and systems can communicate with each other regardless of the technologies they are built with, as long as both sides follow agreed-upon standards and protocols.'},
+  {m:'m5',q:'What does "Loosely Coupled" mean as a web service feature?',a:'The consumer is not directly linked to the provider. The provider\'s interface can change over time without impacting the consumer\'s ability to interact. Opposite of tightly coupled (where both sides must update together).'},
+  {m:'m5',q:'What is the difference between Synchronous and Asynchronous web service invocation?',a:'Synchronous: the client is blocked and must wait for the service to complete before continuing. Asynchronous: the client invokes a task and continues with other tasks while waiting for the result.'},
+  {m:'m5',q:'What are the 6 Functionalities of Middleware (IT 223 Slides)?',a:'1. Communication, 2. Integration, 3. Data Management, 4. Security, 5. Scalability & Performance, 6. Fault Tolerance & Reliability.'},
+  {m:'m5',q:'What is the Security functionality of Middleware?',a:'Middleware can incorporate authentication, authorization, encryption, and digital signatures to protect data and communications from unauthorized access, tampering, or interception.'},
+  {m:'m5',q:'What is the Fault Tolerance & Reliability functionality of Middleware?',a:'Includes replication, redundancy, and failover mechanisms to build robust systems that can withstand failures and errors, ensuring continuous operation and data integrity.'},
+];
+
+const moduleColors={m1:'var(--teal)',m2:'var(--blue)',m3:'var(--purple)',m4:'var(--gold)',m5:'var(--red)'};
+const moduleLabels={m1:'Module 1 – Definitions',m2:'Module 2 – Models & Methods',m3:'Module 3 – Architecture & SOA',m4:'Module 4 – Middleware',m5:'Module 5 – Web Services & Middleware'};
+
+let filteredCards=[...allCards];
+let fcIndex=0;
+
+function initFlashcards(){
+  filteredCards=[...allCards];
+  fcIndex=0;
+  showCard();
+}
+
+function filterFC(mod,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active-f'));
+  btn.classList.add('active-f');
+  filteredCards = mod==='all' ? [...allCards] : allCards.filter(c=>c.m===mod);
+  fcIndex=0;
+  showCard();
+}
+
+function showCard(){
+  if(!filteredCards.length)return;
+  const card=filteredCards[fcIndex];
+  document.getElementById('fcQ').textContent=card.q;
+  document.getElementById('fcA').textContent=card.a;
+  document.getElementById('fcModTag').textContent=moduleLabels[card.m];
+  document.getElementById('fcModTag').style.color=moduleColors[card.m];
+  document.getElementById('fcProg').textContent=`Card ${fcIndex+1} of ${filteredCards.length}`;
+  document.getElementById('fcBar').style.width=((fcIndex+1)/filteredCards.length*100)+'%';
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function flipCard(){ document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard(){ fcIndex=(fcIndex+1)%filteredCards.length; showCard(); }
+function prevCard(){ fcIndex=(fcIndex-1+filteredCards.length)%filteredCards.length; showCard(); }
+
+// ===== QUIZ =====
+const allQuestions=[
+  {m:'m1',q:"Software Integration is best defined as:",opts:["Building new software from scratch","Techniques for combining existing software components to form a complete system","Replacing old systems with entirely new ones","A type of database management"],ans:1,exp:"Software integration refers to techniques for combining existing software components to form a complete system."},
+  {m:'m1',q:"What does 'Zero Latency Organization' mean?",opts:["An organization with very few employees","An organization where all applications have no updates","All functions work with the same up-to-date information, eliminating latency between applications","An organization that avoids using software"],ans:2,exp:"A Zero Latency Organization is formed when all functions within the organization work with the same up-to-date information, so latency between applications is eliminated or reduced."},
+  {m:'m1',q:"Which type of integration involves developing a system with future integration in mind?",opts:["System Integration","Functional Integration","Incremental Engineering","Modification"],ans:2,exp:"Incremental Engineering is when a software system is developed and delivered using available technologies, and additional functions can be integrated later. The challenge is to design the system with such future integration in mind."},
+  {m:'m1',q:"Application Integration assists in:",opts:["Replacing all legacy systems","Unlimited sharing of data and business processes among connected applications","Limiting access to databases","Creating isolated applications"],ans:1,exp:"Application integration assists in unlimited sharing of data and business processes among any connected applications or data structures."},
+  {m:'m1',q:"Modification (as a type of software integration) means:",opts:["Building a new system entirely","Updating the user interface only","An existing functioning software must be decomposed and reintegrated to carry out a modification","Changing the hardware infrastructure"],ans:2,exp:"Modification means that sometimes an existing and properly functioning software system must be decomposed and integrated to carry out modification."},
+  {m:'m2',q:"Which integration method uses asynchronous communication via a shared channel?",opts:["File Transfer","Shared Database","Remote Procedure Invocation","Messaging"],ans:3,exp:"Messaging is when one application publishes a message to a common message channel, which other applications can read at a later time — this is asynchronous."},
+  {m:'m2',q:"Remote Procedure Invocation communication occurs:",opts:["Asynchronously and delayed","In real-time and synchronously","Only via file transfer","Through a shared database"],ans:1,exp:"Remote Procedure Invocation communication occurs in real-time and synchronously."},
+  {m:'m2',q:"The Heterogeneity challenge in integration refers to:",opts:["Slow internet connections","Applications using different programming languages, platforms, and data formats","Too many users accessing one system","Network downtime"],ans:1,exp:"Heterogeneity means applications use different programming languages, operating platforms, and data formats. Each implements its own data model, so mapping and transformations are required."},
+  {m:'m2',q:"The Data Integration Model is primarily used for:",opts:["Creating new user interfaces","Synchronizing or reusing data across applications","Triggering functions in remote applications","Publishing messages to channels"],ans:1,exp:"The Data Integration Model allows integration of software through access to data for the purposes of reusing or synchronizing data across applications."},
+  {m:'m2',q:"In Shared Database integration, why is no data transfer needed?",opts:["Because data is encrypted","Because there is no duplicate data storage","Because apps don't communicate at all","Because the database is read-only"],ans:1,exp:"Because there is no duplicate data storage, no data has to be transferred from one application to another."},
+  {m:'m3',q:"SOA stands for:",opts:["Software Object Architecture","Service-Oriented Architecture","System-Oriented Approach","Standard Open Architecture"],ans:1,exp:"SOA stands for Service-Oriented Architecture — a design approach for building software systems composed of modular and interoperable services."},
+  {m:'m3',q:"Loose Coupling in SOA means:",opts:["Services are tightly bound and dependent","Services can evolve independently without affecting each other","Services cannot be updated after deployment","Services share a single database"],ans:1,exp:"Loose Coupling means that services can evolve independently without affecting other services. They communicate through standardized interfaces."},
+  {m:'m3',q:"What is a Service Contract in SOA?",opts:["A legal document between companies","A well-defined interface specification including operations, parameters, and return values","A type of database schema","A middleware protocol"],ans:1,exp:"A Service Contract specifies the service interface (operations, parameters, and return values) and any associated policies or constraints."},
+  {m:'m3',q:"Which benefit of Integration Architecture relates to faster access to information?",opts:["Reduces Costs","Efficiency Increases","Reliable & Accurate Data","Faster Decision Making"],ans:3,exp:"Faster Decision Making occurs because data is no longer dispersed into repositories — you can see all information as a whole, which is vital for faster decisions."},
+  {m:'m3',q:"Service Composition in SOA means:",opts:["Services are deleted after use","Services can be combined and orchestrated to deliver complex functionalities","Services must only run individually","Services are fixed and cannot be modified"],ans:1,exp:"Service Composition enables services to be combined and orchestrated to deliver complex functionalities, which can be done dynamically."},
+  {m:'m4',q:"Which middleware is the MOST COMMON and enables access to database gateways?",opts:["Cloud Middleware","Database Middleware","Web Middleware","Platform Middleware"],ans:1,exp:"Database Middleware is the most common middleware that enables access and interaction with different database gateways."},
+  {m:'m4',q:"Message-Oriented Middleware (MOM) primarily provides:",opts:["Synchronous communication","Asynchronous communication","Real-time remote procedure calls","Database gateway access"],ans:1,exp:"Message-Oriented Middleware provides asynchronous communication — it just sends the message and performs asynchronous operations."},
+  {m:'m4',q:"An Object Request Broker (ORB) provides:",opts:["Database replication","Location transparency for remote objects","Cloud storage","Mobile application development"],ans:1,exp:"An ORB provides a framework for clients to locate objects in the network and call operations on those objects as though they were local, providing location transparency."},
+  {m:'m4',q:"Cloud Middleware sits between:",opts:["The CPU and RAM","The operating systems behind the cloud and cloud users","The database and application server","The developer and the IDE"],ans:1,exp:"Cloud middleware sits between the operating systems behind the cloud and the cloud users, providing a remote platform."},
+  {m:'m4',q:"Which middleware is used to facilitate interactions between client-facing systems and backend systems?",opts:["Transactional Middleware","Device Middleware","Portals","Robotics Middleware"],ans:2,exp:"Portals are used to facilitate interactions between client-facing systems and backend systems, such as when users want to log into an intranet."},
+  // MODULE 5
+  {m:'m5',q:"What is a Web Service?",opts:["A website that provides customer support","A method of communication between two electronic devices over the World Wide Web","A type of database system","A cloud storage platform"],ans:1,exp:"Web Services are a method of communication between two electronic devices over the WWW, allowing applications to communicate and exchange data in standardized formats like XML or JSON."},
+  {m:'m5',q:"Which data formats are commonly used by Web Services for data exchange?",opts:["CSV and PDF","HTML and CSS","XML and JSON","TXT and DOC"],ans:2,exp:"Web services use XML (for SOAP-based structured communication) and JSON (lightweight, used in RESTful services) for data exchange."},
+  {m:'m5',q:"SOAP stands for:",opts:["Simple Object Access Protocol","Secure Online Application Protocol","Standard Object API Protocol","System Object Access Procedure"],ans:0,exp:"SOAP stands for Simple Object Access Protocol — a transport-independent messaging protocol built on sending XML data in the form of SOAP Messages."},
+  {m:'m5',q:"UDDI serves as a:",opts:["Programming language for web services","Database/repository for all WSDL files","Security layer for SOAP messages","A type of web browser"],ans:1,exp:"UDDI (Universal Description, Discovery, and Integration) provides a repository where WSDL files can be hosted so client applications can discover available web services."},
+  {m:'m5',q:"WSDL is used to:",opts:["Encrypt web service data","Tell the client application what the web service does, where it is, and how to use it","Store large XML files","Replace HTTP in web services"],ans:1,exp:"WSDL (Web Services Description Language) is an XML-based file that explains to the client what the web service does, where it is located, and how to use it."},
+  {m:'m5',q:"The 'Service Consumer' in a web service is:",opts:["The entity that hosts the web service","The application or system that uses the web service's functionalities","The XML document attached to SOAP messages","The UDDI registry"],ans:1,exp:"The Service Consumer is the application or system that wants to use the functionalities provided by the web service. It sends requests and receives responses."},
+  {m:'m5',q:"What protocol do Web Service communications typically use?",opts:["FTP and Telnet","HTTP or HTTPS","SMTP and POP3","SSH"],ans:1,exp:"Communication between the service consumer and provider typically happens over HTTP (Hypertext Transfer Protocol) or HTTPS (HTTP Secure)."},
+  {m:'m5',q:"'Loosely Coupled' as a Web Service feature means:",opts:["Services are tightly bound to each other","The consumer is not necessarily directly linked to the provider; the provider can change without impacting the consumer","Services must always be online at the same time","Services use only one programming language"],ans:1,exp:"Loosely Coupled means the consumer is not directly linked to the provider. The provider's interface can change without impacting the consumer's ability to interact."},
+  {m:'m5',q:"In Asynchronous web service invocation, the client:",opts:["Must wait for the service to complete before continuing","Invokes a task and continues with other tasks while waiting","Cannot receive a response","Only works with SOAP"],ans:1,exp:"Asynchronous operations allow a client to invoke a task and then continue with other tasks, unlike synchronous where the client is blocked and must wait."},
+  {m:'m5',q:"Which is an advantage of Web Services regarding reuse?",opts:["A web service can only be used by one client at a time","A single web service can be used simultaneously by several client applications","Each client needs a separate copy of the web service","Web services cannot be reused once deployed"],ans:1,exp:"Reusability is a key advantage — a single web service can be used simultaneously by several different client applications."},
+  {m:'m5',q:"Middleware (IT 223 Slides) sits between:",opts:["The CPU and hard drive","The operating system and the application","The router and the modem","The database and the cloud"],ans:1,exp:"Middleware sits between the operating system and the application, providing services that help build distributed systems and connect heterogeneous components."},
+  {m:'m5',q:"Which Middleware functionality protects data using authentication, encryption, and digital signatures?",opts:["Data Management","Communication","Fault Tolerance","Security"],ans:3,exp:"The Security functionality of Middleware incorporates authentication, authorization, encryption, and digital signatures to protect data and communications from unauthorized access."},
+  {m:'m5',q:"Fault Tolerance & Reliability in Middleware is achieved through:",opts:["XML messaging and SOAP","Replication, redundancy, and failover mechanisms","HTTP and HTTPS protocols","Load balancing and caching only"],ans:1,exp:"Middleware achieves fault tolerance through replication, redundancy, and failover mechanisms to ensure continuous operation and data integrity even when failures occur."},
+];
+
+let activeModules={m1:true,m2:true,m3:true,m4:true,m5:true};
+let quizAnswers=[],quizSubmitted=[];
+
+function toggleQuizFilter(m){
+  activeModules[m]=!activeModules[m];
+  document.getElementById('qfb-'+m).classList.toggle('on',activeModules[m]);
+}
+function startQuiz(){
+  const pool=allQuestions.filter(q=>activeModules[q.m]);
+  if(!pool.length){alert('Please select at least one module!');return;}
+  document.getElementById('quiz-intro').style.display='none';
+  quizAnswers=new Array(pool.length).fill(null);
+  quizSubmitted=new Array(pool.length).fill(false);
+  renderQuiz(pool);
+  document.getElementById('quiz-body').style.display='block';
+}
+function renderQuiz(pool){
+  const body=document.getElementById('quiz-body');
+  body.innerHTML='';
+  pool.forEach((q,qi)=>{
+    const div=document.createElement('div');
+    div.className='quiz-q';div.style.animationDelay=(qi*0.04)+'s';
+    const mc=moduleColors[q.m];
+    div.innerHTML=`<div class="quiz-q-module" style="color:${mc}">${moduleLabels[q.m]}</div><div class="quiz-q-text">${qi+1}. ${q.q}</div>`;
+    q.opts.forEach((opt,oi)=>{
+      const btn=document.createElement('button');
+      btn.className='quiz-opt';btn.textContent=opt;
+      btn.onclick=()=>answerQ(qi,oi,q,div);div.appendChild(btn);
+    });
+    const fb=document.createElement('div');fb.id=`fb-${qi}`;div.appendChild(fb);
+    body.appendChild(div);
+  });
+  const sb=document.createElement('div');sb.style.cssText='text-align:center;margin-top:1.5rem;';
+  sb.innerHTML=`<button class="btn btn-blue" onclick="showScore(${pool.length})">Submit All &amp; See Score</button>`;
+  body.appendChild(sb);
+}
+function answerQ(qi,oi,q,qDiv){
+  if(quizSubmitted[qi])return;
+  quizSubmitted[qi]=true;quizAnswers[qi]=oi;
+  qDiv.querySelectorAll('.quiz-opt').forEach((btn,idx)=>{
+    if(idx===q.ans)btn.classList.add('correct');
+    else if(idx===oi&&oi!==q.ans)btn.classList.add('wrong');
+    else btn.classList.add('disabled');
+  });
+  const fb=document.getElementById(`fb-${qi}`);
+  fb.className='quiz-feedback '+(oi===q.ans?'ok':'bad');
+  fb.textContent=(oi===q.ans?'✓ Correct! ':'✗ Incorrect. ')+q.exp;
+}
+function showScore(total){
+  const pool=allQuestions.filter(q=>activeModules[q.m]);
+  const correct=quizAnswers.filter((a,i)=>a!==null&&a===pool[i]?.ans).length;
+  const pct=Math.round(correct/total*100);
+  const msg=pct>=80?"Excellent! You're ready! 🎉":pct>=60?"Good effort — review the tricky ones.":"Keep reviewing — you've got this! 💪";
+  const sd=document.createElement('div');sd.className='quiz-score';
+  sd.innerHTML=`<h2>Quiz Complete!</h2><span class="big-score">${correct}/${total}</span><p>${pct}% · ${msg}</p><br><br><button class="btn btn-blue" onclick="restartQuiz()">Try Again</button>`;
+  document.getElementById('quiz-body').appendChild(sd);
+  sd.scrollIntoView({behavior:'smooth'});
+}
+function restartQuiz(){
+  document.getElementById('quiz-body').style.display='none';
+  document.getElementById('quiz-body').innerHTML='';
+  document.getElementById('quiz-intro').style.display='block';
+}
+
+initFlashcards();
+</script>
+</body>
+</html>
